@@ -1,0 +1,36 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+/* Mix */
+.wrapper {
+	width: 80%;
+	margin: 20px auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+.serch {
+	width: 200px;
+}
+.btn {
+	width: 50px;
+	margin: 10px;
+	background-color: #000;
+	color: #fff;
+	text-align: center;
+	cursor: pointer;
+}
+.btn:hover {
+	border: 1px solid #000;
+	background-color: #fff;
+	color: #000;
+}
+#list-movies > .title {
+	margin: 10px 0;
+}
+.details {
+	margin-left: 10px;
+}
