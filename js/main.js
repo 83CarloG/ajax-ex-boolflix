@@ -95,11 +95,11 @@ function voteToStars(vote) {
 
 	var fullStar = "<i class='fas fa-star'></i>";
 	var emptyStar = "<i class='far fa-star'></i>";
-	var voteTotal = "";
-	for (var i = 0; i < vote; i++) {
+	var voteTotal = '';
+	for (var i = 0; i < voteStar; i++) {
 		voteTotal += fullStar;
 	}
-	for (var i = 0; i < (5 - vote); i++) {
+	for (var i = 0; i < (5 - voteStar); i++) {
 		voteTotal += emptyStar;
 	}
 
