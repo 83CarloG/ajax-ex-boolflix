@@ -33,6 +33,8 @@ function renderMovie	(movies) {
 		var context = movies[i];
 		// Manipolo l'oggetto
 		context.vote_average = voteToStars(movies[i].vote_average);
+		context.original_language = flag(movies[i].original_language);
+
 
 
 		var html = template(context);
@@ -104,4 +106,16 @@ function voteToStars(vote) {
 	}
 
 	return voteTotal;
+}
+// Funzione per inserire le bandiere
+
+
+function flag	(lang) {
+	if (lang === '') {
+		return 'Lingua non presente'
+	} else if (lang === 'en')	{
+		return ("<img src=https://www.countryflags.io/" + 'gb' + "/shiny/16.png>");
+	} else {
+		return ("<img src=https://www.countryflags.io/" + lang + "/shiny/16.png>");
+	}
 }
