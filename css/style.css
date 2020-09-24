@@ -34,3 +34,14 @@
 .details {
 	margin-left: 10px;
 }
+.fas, .far {
+	background-color: inherit;
+	color: #D4AF37;
+}
+.poster {
+	list-style: none;
+}
+.poster__img {
+	width: 185px;
+	height: 278px;
+}

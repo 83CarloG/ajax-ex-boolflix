@@ -16,25 +16,36 @@
 	Qui un esempio di chiamata per le serie tv:
 	https://api.themoviedb.org/3/search/tv?api_key=e99307154c6dfb0b4750f6603256716d&language=it_IT&query=scrubs
 */
+/*
+#Milestone 3:
+	In questa milestone come prima cosa aggiungiamo la copertina del film o della serie al nostro elenco.
+	Ci viene passata dall’API solo la parte finale dell’URL, questo perché poi potremo generare da quella porzione di URL tante dimensioni diverse.
+	Dovremo prendere quindi l’URL base delle immagini di TMDB: https://image.tmdb.org/t/p/ per poi aggiungere la dimensione che vogliamo generare (troviamo tutte le dimensioni possibili a questo link: https://www.themoviedb.org/talk/53c11d4ec3a3684cf4006400) per poi aggiungere la parte finale dell’URL passata dall’API.
+	Esempio di URL che torna la copertina di PEPPA PIG:
+	https://image.tmdb.org/t/p/w185/tZgQ76hS9RFIwFyUxzctp1Pkz0N.jpg
+*/
 $(document).ready(function	() {
-	serchMovieClick('.btn', '.serch');
-	serchMovieKey('.serch', 13);
-	serchSerieClick('.btn', '.serch');
-	serchSerieKey('.serch', 13);
+	const boolflix = {
+		serchMovieClick: serchMovieClick('.btn', '.serch'),
+		serchMovieKey: serchMovieKey('.serch', 13),
+		serchSerieClick: serchSerieClick('.btn', '.serch'),
+		serchSerieKey: serchSerieKey('.serch', 13)
+	};
 });
-// Funzioni
+
 // Funzione per la renderizzazione della pagina
-function render	(movies) {
+function render	(input) {
 	// Handlebars
 	var source = document.getElementById('movie-template').innerHTML;
 	var template = Handlebars.compile(source);
 	//  Print evry files to endpoint
-	for (var i = 0; i < movies.length; i++) {
+	for (var i = 0; i < input.length; i++) {
 		// Prepariamo il contenuto dell'Html
-		var context = movies[i];
+		var context = input[i];
 		// Manipolo l'oggetto
-		context.vote_average = voteToStars(movies[i].vote_average);
-		context.original_language = flag(movies[i].original_language);
+		context.vote_average = voteToStars(input[i].vote_average);
+		context.original_language = flag(input[i].original_language);
+		context.poster_path = insertImage(context.poster_path);
 		var html = template(context);
 		// Inseriamo il template nell' id #list-movies
 		$('#list-movies').append(html);
@@ -64,7 +75,7 @@ function serchMovieClick (bottone, campoInput) {
 		});
 	});
 }
-// Funzione per la ricerca dei titoli dei film con  il tasto invio
+// Funzione per la ricerca dei titoli dei film con  il tasto invio(o altro)
 function serchMovieKey (campoInput, e) {
 	$(campoInput).keyup(function	(e) {
 		if (e.which === 13) {
@@ -90,7 +101,7 @@ function serchMovieKey (campoInput, e) {
 		}
 	});
 }
-// Funzione per la ricerca dei titoli dei film con il bottone cerca
+// Funzione per la ricerca dei titoli delle serie  con il bottone cerca
 function serchSerieClick (bottone, campoInput) {
 	$(bottone).click(function	() {
 		var input = $(campoInput).val();
@@ -113,7 +124,7 @@ function serchSerieClick (bottone, campoInput) {
 		});
 	});
 }
-// Funzione per la ricerca dei titoli dei film con  il tasto invio
+// Funzione per la ricerca dei titoli delle serie con il tasto invio
 function serchSerieKey (campoInput, e) {
 	$(campoInput).keyup(function	(e) {
 		if (e.which === 13) {
@@ -143,8 +154,8 @@ function serchSerieKey (campoInput, e) {
 function voteToStars	(vote) {
 	var voteStar = Math.ceil(vote / 2);
 
-	var fullStar = "<i class='fas fa-star'></i>";
-	var emptyStar = "<i class='far fa-star'></i>";
+	var fullStar = '<i class="fas fa-star"></i>';
+	var emptyStar = '<i class="far fa-star"></i>';
 	var voteTotal = '';
 	for (var i = 0; i < voteStar; i++) {
 		voteTotal += fullStar;
@@ -156,7 +167,6 @@ function voteToStars	(vote) {
 	return voteTotal;
 }
 // Funzione per inserire le bandiere - si ringrazia il sito countryflags.io
-
 function flag	(lang) {
 	if (lang === '') {
 		return 'Lingua non presente';
@@ -165,4 +175,14 @@ function flag	(lang) {
 	} else {
 		return ('<img src=https://www.countryflags.io/' + lang + '/shiny/16.png>');
 	}
+}
+// Funzione per inserire l'immagine
+function insertImage (image) {
+	var noImage = 'https://image.tmdb.org/t/p/w185/null';
+	image = 'https://image.tmdb.org/t/p/w185/' + image;
+
+	if (image === noImage) {
+		image = 'img/no_locandina .webp';
+	}
+	return image;
 }
