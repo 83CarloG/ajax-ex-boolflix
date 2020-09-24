@@ -17,13 +17,14 @@
 	https://api.themoviedb.org/3/search/tv?api_key=e99307154c6dfb0b4750f6603256716d&language=it_IT&query=scrubs
 */
 $(document).ready(function	() {
-	serchMoviesClick('.btn', '.serch');
-	serchMoviesKey('.serch', 13);
+	serchMovieClick('.btn', '.serch');
+	serchMovieKey('.serch', 13);
+	serchSerieClick('.btn', '.serch');
+	serchSerieKey('.serch', 13);
 });
 // Funzioni
 // Funzione per la renderizzazione della pagina
-function renderMovie	(movies) {
-	$('#list-movies li').remove();
+function render	(movies) {
 	// Handlebars
 	var source = document.getElementById('movie-template').innerHTML;
 	var template = Handlebars.compile(source);
@@ -34,17 +35,15 @@ function renderMovie	(movies) {
 		// Manipolo l'oggetto
 		context.vote_average = voteToStars(movies[i].vote_average);
 		context.original_language = flag(movies[i].original_language);
-
-
-
 		var html = template(context);
 		// Inseriamo il template nell' id #list-movies
 		$('#list-movies').append(html);
 	}
 }
-// Funzione per la ricerca dei titoli con il bottone cerca
-function serchMoviesClick (bottone, campoInput) {
+// Funzione per la ricerca dei titoli dei film con il bottone cerca
+function serchMovieClick (bottone, campoInput) {
 	$(bottone).click(function	() {
+		$('#list-movies li').remove();
 		var input = $(campoInput).val();
 		// Chiamata Ajax
 		$.ajax({
@@ -56,7 +55,7 @@ function serchMoviesClick (bottone, campoInput) {
 				language: 'it-IT'
 			},
 			success: function (data) {
-				renderMovie(data.results);
+				render(data.results);
 				$(campoInput).val('');
 			},
 			error: function (err) {
@@ -65,10 +64,11 @@ function serchMoviesClick (bottone, campoInput) {
 		});
 	});
 }
-// Funzione per la ricerca dei titoli con  il tasto invio
-function serchMoviesKey (campoInput, e) {
+// Funzione per la ricerca dei titoli dei film con  il tasto invio
+function serchMovieKey (campoInput, e) {
 	$(campoInput).keyup(function	(e) {
 		if (e.which === 13) {
+			$('#list-movies li').remove();
 			var input = $(campoInput).val();
 			// Chiamata Ajax
 			$.ajax({
@@ -80,7 +80,55 @@ function serchMoviesKey (campoInput, e) {
 					language: 'it-IT'
 				},
 				success: function (data) {
-					renderMovie(data.results);
+					render(data.results);
+					$(campoInput).val('');
+				},
+				error: function (err) {
+					console.log('Errore: ' + err);
+				}
+			});
+		}
+	});
+}
+// Funzione per la ricerca dei titoli dei film con il bottone cerca
+function serchSerieClick (bottone, campoInput) {
+	$(bottone).click(function	() {
+		var input = $(campoInput).val();
+		// Chiamata Ajax
+		$.ajax({
+			url: 'https://api.themoviedb.org/3/search/tv',
+			type: 'GET',
+			data: {
+				api_key: 'c423a47df89e015bd0c2e2130db1be10',
+				query: input,
+				language: 'it-IT'
+			},
+			success: function (data) {
+				render(data.results);
+				$(campoInput).val('');
+			},
+			error: function (err) {
+				console.log('Errore: ' + err);
+			}
+		});
+	});
+}
+// Funzione per la ricerca dei titoli dei film con  il tasto invio
+function serchSerieKey (campoInput, e) {
+	$(campoInput).keyup(function	(e) {
+		if (e.which === 13) {
+			var input = $(campoInput).val();
+			// Chiamata Ajax
+			$.ajax({
+				url: 'https://api.themoviedb.org/3/search/tv',
+				type: 'GET',
+				data: {
+					api_key: 'c423a47df89e015bd0c2e2130db1be10',
+					query: input,
+					language: 'it-IT'
+				},
+				success: function (data) {
+					render(data.results);
 					$(campoInput).val('');
 				},
 				error: function (err) {
@@ -92,7 +140,7 @@ function serchMoviesKey (campoInput, e) {
 }
 
 // Funzione per trasformare un numero in stelle
-function voteToStars(vote) {
+function voteToStars	(vote) {
 	var voteStar = Math.ceil(vote / 2);
 
 	var fullStar = "<i class='fas fa-star'></i>";
@@ -101,21 +149,20 @@ function voteToStars(vote) {
 	for (var i = 0; i < voteStar; i++) {
 		voteTotal += fullStar;
 	}
-	for (var i = 0; i < (5 - voteStar); i++) {
+	for (i = 0; i < (5 - voteStar); i++) {
 		voteTotal += emptyStar;
 	}
 
 	return voteTotal;
 }
-// Funzione per inserire le bandiere
-
+// Funzione per inserire le bandiere - si ringrazia il sito countryflags.io
 
 function flag	(lang) {
 	if (lang === '') {
-		return 'Lingua non presente'
+		return 'Lingua non presente';
 	} else if (lang === 'en')	{
-		return ("<img src=https://www.countryflags.io/" + 'gb' + "/shiny/16.png>");
+		return ('<img src=https://www.countryflags.io/' + 'gb' + '/shiny/16.png>');
 	} else {
-		return ("<img src=https://www.countryflags.io/" + lang + "/shiny/16.png>");
+		return ('<img src=https://www.countryflags.io/' + lang + '/shiny/16.png>');
 	}
 }
