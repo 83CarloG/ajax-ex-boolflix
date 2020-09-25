@@ -33,10 +33,12 @@ $(document).ready(function	() {
 // FUNZIONI
 // Funzione per la renderizzazione della pagina
 function render	(input, type) {
+	console.log(input.length)
 	// Handlebars
 	var source = document.getElementById('movie-template').innerHTML;
 	var template = Handlebars.compile(source);
 	//  Print evry files to endpoint
+	// input.length ? console.log('ok') : $('.type-series').remove();
 	for (var i = 0; i < input.length; i++) {
 		// Prepariamo il contenuto dell'Html
 		var context = input[i];
@@ -44,45 +46,28 @@ function render	(input, type) {
 		context.vote_average = voteToStars(input[i].vote_average);
 		context.original_language = flag(input[i].original_language);
 		context.poster_path = insertImage(context.poster_path);
+		console.log(context.poster_path)
 		var html = template(context);
 		// Inseriamo il template nell' id #list-movies o #list-series
-		if (type === 'movies') {
+		if (type === 'movie') {
 			$('.list-movies').append(html);
 		} else {
 			$('.list-series').append(html);
 		}
 	}
 }
-// Funzione Ajax per i film
-function callAjaxMovie (input) {
+// Chiamata Ajax per ricerca film o serie
+function callAjaxData (serchString, type) {
 	$.ajax({
-		url: 'https://api.themoviedb.org/3/search/movie',
+		url: 'https://api.themoviedb.org/3/search/' + type,
 		type: 'GET',
 		data: {
 			api_key: 'c423a47df89e015bd0c2e2130db1be10',
-			query: input,
+			query: serchString,
 			language: 'it-IT'
 		},
 		success: function (data) {
-			render(data.results, 'movies');
-		},
-		error: function (err) {
-			console.log('Errore: ' + err);
-		}
-	});
-}
-// Funzione ajax per le serie
-function callAjaxSerie (input) {
-	$.ajax({
-		url: 'https://api.themoviedb.org/3/search/tv',
-		type: 'GET',
-		data: {
-			api_key: 'c423a47df89e015bd0c2e2130db1be10',
-			query: input,
-			language: 'it-IT'
-		},
-		success: function (data) {
-			render(data.results, 'series');
+			render(data.results, type);
 		},
 		error: function (err) {
 			console.log('Errore: ' + err);
@@ -92,22 +77,22 @@ function callAjaxSerie (input) {
 // Funzione per la ricerca dei titoli dei film con il bottone cerca
 function serchClick (bottone, campoInput) {
 	$(bottone).click(function	() {
-		$('.list li').remove();
 		var input = $(campoInput).val();
+		resetSerch();
 		// Chiamata Ajax
-		callAjaxMovie(input);
-		callAjaxSerie(input);
+		callAjaxData(input, 'movie');
+		callAjaxData(input, 'tv');
 	});
 }
 // Funzione per la ricerca dei titoli dei film con  il tasto invio(o altro)
 function serchKey (campoInput, e) {
 	$(campoInput).keyup(function	(e) {
 		if (e.which === 13) {
-			$('.list li').remove();
 			var input = $(campoInput).val();
+			resetSerch();
 			// Chiamata Ajax
-			callAjaxMovie(input);
-			callAjaxSerie(input);
+			callAjaxData(input, 'movie');
+			callAjaxData(input, 'tv');
 		}
 	});
 }
@@ -137,11 +122,15 @@ function flag	(lang) {
 }
 // Funzione per inserire l'immagine
 function insertImage (image) {
-	var noImage = 'https://image.tmdb.org/t/p/w185/null';
-	image = 'https://image.tmdb.org/t/p/w185/' + image;
-
-	if (image === noImage) {
-		image = 'img/no_locandina .webp';
+	if (image === null) {
+		image = 'img/no_poster.png';
+	} else {
+		image = 'https://image.tmdb.org/t/p/w185/' + image;
 	}
 	return image;
+}
+// Funzione di reset campo input e risultati
+function resetSerch ()	{
+	$('.list li').remove();
+	$('.serch').val('');
 }

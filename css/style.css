@@ -28,9 +28,10 @@
 	background-color: #fff;
 	color: #000;
 }
-#list-movies > .title {
+.list-movies > .title, .list-series > .title {
 	margin: 10px 0;
 }
+
 .details {
 	margin-left: 10px;
 }
