@@ -26,15 +26,13 @@
 */
 $(document).ready(function	() {
 	const boolflix = {
-		serchMovieClick: serchMovieClick('.btn', '.serch'),
-		serchMovieKey: serchMovieKey('.serch', 13),
-		serchSerieClick: serchSerieClick('.btn', '.serch'),
-		serchSerieKey: serchSerieKey('.serch', 13)
+		serchClick: serchClick('.btn', '.serch'),
+		serchKey: serchKey('.serch', 13)
 	};
 });
-
+// FUNZIONI
 // Funzione per la renderizzazione della pagina
-function render	(input) {
+function render	(input, type) {
 	// Handlebars
 	var source = document.getElementById('movie-template').innerHTML;
 	var template = Handlebars.compile(source);
@@ -47,113 +45,75 @@ function render	(input) {
 		context.original_language = flag(input[i].original_language);
 		context.poster_path = insertImage(context.poster_path);
 		var html = template(context);
-		// Inseriamo il template nell' id #list-movies
-		$('#list-movies').append(html);
+		// Inseriamo il template nell' id #list-movies o #list-series
+		if (type === 'movies') {
+			$('.list-movies').append(html);
+		} else {
+			$('.list-series').append(html);
+		}
 	}
 }
+// Funzione Ajax per i film
+function callAjaxMovie (input) {
+	$.ajax({
+		url: 'https://api.themoviedb.org/3/search/movie',
+		type: 'GET',
+		data: {
+			api_key: 'c423a47df89e015bd0c2e2130db1be10',
+			query: input,
+			language: 'it-IT'
+		},
+		success: function (data) {
+			render(data.results, 'movies');
+		},
+		error: function (err) {
+			console.log('Errore: ' + err);
+		}
+	});
+}
+// Funzione ajax per le serie
+function callAjaxSerie (input) {
+	$.ajax({
+		url: 'https://api.themoviedb.org/3/search/tv',
+		type: 'GET',
+		data: {
+			api_key: 'c423a47df89e015bd0c2e2130db1be10',
+			query: input,
+			language: 'it-IT'
+		},
+		success: function (data) {
+			render(data.results, 'series');
+		},
+		error: function (err) {
+			console.log('Errore: ' + err);
+		}
+	});
+}
 // Funzione per la ricerca dei titoli dei film con il bottone cerca
-function serchMovieClick (bottone, campoInput) {
+function serchClick (bottone, campoInput) {
 	$(bottone).click(function	() {
-		$('#list-movies li').remove();
+		$('.list li').remove();
 		var input = $(campoInput).val();
 		// Chiamata Ajax
-		$.ajax({
-			url: 'https://api.themoviedb.org/3/search/movie',
-			type: 'GET',
-			data: {
-				api_key: 'c423a47df89e015bd0c2e2130db1be10',
-				query: input,
-				language: 'it-IT'
-			},
-			success: function (data) {
-				render(data.results);
-				$(campoInput).val('');
-			},
-			error: function (err) {
-				console.log('Errore: ' + err);
-			}
-		});
+		callAjaxMovie(input);
+		callAjaxSerie(input);
 	});
 }
 // Funzione per la ricerca dei titoli dei film con  il tasto invio(o altro)
-function serchMovieKey (campoInput, e) {
+function serchKey (campoInput, e) {
 	$(campoInput).keyup(function	(e) {
 		if (e.which === 13) {
-			$('#list-movies li').remove();
+			$('.list li').remove();
 			var input = $(campoInput).val();
 			// Chiamata Ajax
-			$.ajax({
-				url: 'https://api.themoviedb.org/3/search/movie',
-				type: 'GET',
-				data: {
-					api_key: 'c423a47df89e015bd0c2e2130db1be10',
-					query: input,
-					language: 'it-IT'
-				},
-				success: function (data) {
-					render(data.results);
-					$(campoInput).val('');
-				},
-				error: function (err) {
-					console.log('Errore: ' + err);
-				}
-			});
+			callAjaxMovie(input);
+			callAjaxSerie(input);
 		}
 	});
 }
-// Funzione per la ricerca dei titoli delle serie  con il bottone cerca
-function serchSerieClick (bottone, campoInput) {
-	$(bottone).click(function	() {
-		var input = $(campoInput).val();
-		// Chiamata Ajax
-		$.ajax({
-			url: 'https://api.themoviedb.org/3/search/tv',
-			type: 'GET',
-			data: {
-				api_key: 'c423a47df89e015bd0c2e2130db1be10',
-				query: input,
-				language: 'it-IT'
-			},
-			success: function (data) {
-				render(data.results);
-				$(campoInput).val('');
-			},
-			error: function (err) {
-				console.log('Errore: ' + err);
-			}
-		});
-	});
-}
-// Funzione per la ricerca dei titoli delle serie con il tasto invio
-function serchSerieKey (campoInput, e) {
-	$(campoInput).keyup(function	(e) {
-		if (e.which === 13) {
-			var input = $(campoInput).val();
-			// Chiamata Ajax
-			$.ajax({
-				url: 'https://api.themoviedb.org/3/search/tv',
-				type: 'GET',
-				data: {
-					api_key: 'c423a47df89e015bd0c2e2130db1be10',
-					query: input,
-					language: 'it-IT'
-				},
-				success: function (data) {
-					render(data.results);
-					$(campoInput).val('');
-				},
-				error: function (err) {
-					console.log('Errore: ' + err);
-				}
-			});
-		}
-	});
-}
-
 // Funzione per trasformare un numero in stelle
 function voteToStars	(vote) {
 	var voteStar = Math.ceil(vote / 2);
-
 	var fullStar = '<i class="fas fa-star"></i>';
 	var emptyStar = '<i class="far fa-star"></i>';
 	var voteTotal = '';
@@ -163,7 +123,6 @@ function voteToStars	(vote) {
 	for (i = 0; i < (5 - voteStar); i++) {
 		voteTotal += emptyStar;
 	}
-
 	return voteTotal;
 }
 // Funzione per inserire le bandiere - si ringrazia il sito countryflags.io
