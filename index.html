@@ -14,13 +14,15 @@ initial-scale=1.0">
     <body>
 			<!-- Header -->
 			<header class="header">
-				<div class="logo">
-					<img class="logo__img" src="img/boolflix_logo.png" alt="logo boolflix">
-				</div>
-				<div class="serch">
-					<input class="serch__input" type="text" placeholder="cerca un film">
-					<div class="serch__btn">
-						<i class="serch__icon fas fa-search"></i>
+				<div class="header__menu">
+					<div class="logo">
+						<img class="logo__img" src="img/boolflix_logo.png" alt="logo boolflix">
+					</div>
+					<div class="serch">
+						<input class="serch__input" type="text" placeholder="cerca un film">
+						<div class="serch__btn">
+							<i class="serch__icon fas fa-search"></i>
+						</div>
 					</div>
 				</div>
 			</header>
@@ -28,11 +30,11 @@ initial-scale=1.0">
 			<!-- Main -->
 			<main class="main">
 				<div class="wrapper">
-					<h2 class="type type-movies">Movies</h2>
+					<h2 class="type type-movies d-none">Movies</h2>
 					<div class="list list-movies">
 
 					</div>
-					<h2 class="type type-series">Series</h2>
+					<h2 class="type type-series d-none">Series</h2>
 					<div class="list list-series">
 
 					</div>
@@ -53,7 +55,7 @@ initial-scale=1.0">
 					<li><h4>Titolo originale: </h4> {{original_title}} {{original_name}}</li>
 					<!-- <li>lingua originale: {{{original_language}}}</li> -->
 					<li><h4>Voto medio: </h4>{{{vote_average}}}</li>
-					<li><h4>Overview: </h4>{{overview}}</li>
+					<li class="overvie-2"><h4>Overview: </h4><span class="overview">{{overview}}</span></li>
 				</ul>
 			</div>
 			<div class="poster"><img class="poster__img" src="{{{poster_path}}}" alt="{{{title}}}"></div>
