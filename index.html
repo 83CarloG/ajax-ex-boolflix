@@ -2,41 +2,70 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
+				<meta name="viewport" content="width=device-width,
+initial-scale=1.0">
         <title>boolflix</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.2/handlebars.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 				<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+				<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
 				<link rel="stylesheet" href="css/style.css">
     </head>
     <body>
-
-			<div class="wrapper">
-				<h1>BOOLFLIX</h1>
-				<input class="serch" type="text" placeholder="cerca un film">
-				<div class="btn">
-					cerca
+			<!-- Header -->
+			<header class="header">
+				<div class="logo">
+					<img class="logo__img" src="img/boolflix_logo.png" alt="logo boolflix">
 				</div>
-				<h2 class="type type-movies">Movies</h2>
-				<ul class="list list-movies">
+				<div class="serch">
+					<input class="serch__input" type="text" placeholder="cerca un film">
+					<div class="serch__btn">
+						<i class="serch__icon fas fa-search"></i>
+					</div>
+				</div>
+			</header>
+			<!-- Header -->
+			<!-- Main -->
+			<main class="main">
+				<div class="wrapper">
+					<h2 class="type type-movies">Movies</h2>
+					<div class="list list-movies">
 
-				</ul>
-				<h2 class="type type-series">Series</h2>
-				<ul class="list list-series">
+					</div>
+					<h2 class="type type-series">Series</h2>
+					<div class="list list-series">
 
+					</div>
+				</div>
+			</main>
+			<!-- /Main -->
+			<!-- Footer -->
+			<footer class="footer">
+
+			</footer>
+
+		<!-- Template Film/Serie-->
+		<script id="movie-serie-template" type="text/x-handlebars-template">
+		<div class="item">
+			<div class="card">
+				<ul class="details">
+					<li class="title"><h4>Titolo: </h4>{{title}} {{name}}</li>
+					<li><h4>Titolo originale: </h4> {{original_title}} {{original_name}}</li>
+					<!-- <li>lingua originale: {{{original_language}}}</li> -->
+					<li><h4>Voto medio: </h4>{{{vote_average}}}</li>
+					<li><h4>Overview: </h4>{{overview}}</li>
 				</ul>
 			</div>
+			<div class="poster"><img class="poster__img" src="{{{poster_path}}}" alt="{{{title}}}"></div>
+		</div>
 
-		<!-- Template -->
-		<script id="movie-template" type="text/x-handlebars-template">
-			 	<li class="title"><h3>{{title}} {{name}}</h3></li>
-				<ul class="details">
-					<li>titolo originale: {{original_title}} {{original_name}}</li>
-					<li>lingua originale: {{{original_language}}}</li>
-					<li>voto medio: {{{vote_average}}}</li>
-					<li class="poster"><img class="poster__img" src="{{{poster_path}}}" alt="#"></li>
-			 </ul>
+
 		</script>
 		<!-- /Template -->
+		<!-- Template NotFound -->
+		<script id="not-found-template" type="text/x-handlebars-template">
+			 <li>La ricerca non ha prodotto risultati</li>
+		</script>
 
 		<script src="js/main.js" charset="utf-8"></script>
     </body>

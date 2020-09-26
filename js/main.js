@@ -26,8 +26,8 @@
 */
 $(document).ready(function	() {
 	const boolflix = {
-		serchClick: serchClick('.btn', '.serch'),
-		serchKey: serchKey('.serch', 13)
+		serchClick: serchClick('.serch__btn', '.serch__input'),
+		serchKey: serchKey('.serch__input', 13)
 	};
 });
 // FUNZIONI
@@ -35,7 +35,7 @@ $(document).ready(function	() {
 function render	(input, type) {
 	console.log(input.length)
 	// Handlebars
-	var source = document.getElementById('movie-template').innerHTML;
+	var source = $('#movie-serie-template').html();
 	var template = Handlebars.compile(source);
 	//  Print evry files to endpoint
 	// input.length ? console.log('ok') : $('.type-series').remove();
@@ -67,12 +67,29 @@ function callAjaxData (serchString, type) {
 			language: 'it-IT'
 		},
 		success: function (data) {
-			render(data.results, type);
+			if (data.total_results) {
+				render(data.results, type);
+			} else {
+				console.log(data.total_results)
+				notFound(type);
+			}
+
 		},
 		error: function (err) {
 			console.log('Errore: ' + err);
 		}
 	});
+}
+// Funzione per notifica 0 risultati
+function notFound (type) {
+	var source = $('#not-found-template').html();
+	var template = Handlebars.compile(source);
+	var html = template();
+	if (type === 'movie') {
+		$('.list-movies').append(html);
+	} else {
+		$('.list-series').append(html);
+	}
 }
 // Funzione per la ricerca dei titoli dei film con il bottone cerca
 function serchClick (bottone, campoInput) {
@@ -99,8 +116,8 @@ function serchKey (campoInput, e) {
 // Funzione per trasformare un numero in stelle
 function voteToStars	(vote) {
 	var voteStar = Math.ceil(vote / 2);
-	var fullStar = '<i class="fas fa-star"></i>';
-	var emptyStar = '<i class="far fa-star"></i>';
+	var fullStar = '<i class="star fas fa-star"></i>';
+	var emptyStar = '<i class="star far fa-star"></i>';
 	var voteTotal = '';
 	for (var i = 0; i < voteStar; i++) {
 		voteTotal += fullStar;
@@ -125,12 +142,12 @@ function insertImage (image) {
 	if (image === null) {
 		image = 'img/no_poster.png';
 	} else {
-		image = 'https://image.tmdb.org/t/p/w185/' + image;
+		image = 'https://image.tmdb.org/t/p/w342/' + image;
 	}
 	return image;
 }
 // Funzione di reset campo input e risultati
 function resetSerch ()	{
-	$('.list li').remove();
-	$('.serch').val('');
+	$('.list .item').remove();
+	$('.serch__input').val('');
 }
