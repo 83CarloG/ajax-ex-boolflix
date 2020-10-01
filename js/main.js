@@ -47,12 +47,9 @@ $(document).ready(function	() {
 // FUNZIONI
 // Funzione per la renderizzazione della pagina
 function render	(input, type) {
-	console.log(input.length)
-	// Handlebars
+		// Handlebars
 	var source = $('#movie-serie-template').html();
 	var template = Handlebars.compile(source);
-	//  Print evry files to endpoint
-	// input.length ? console.log('ok') : $('.type-series').remove();
 	for (var i = 0; i < input.length; i++) {
 		// Prepariamo il contenuto dell'Html
 		var context = input[i];
@@ -60,17 +57,36 @@ function render	(input, type) {
 		context.vote_average = voteToStars(input[i].vote_average);
 		context.original_language = flag(input[i].original_language);
 		context.poster_path = insertImage(context.poster_path);
-		console.log(context.poster_path)
+		context.id = input[i].id;
 		var html = template(context);
 		// Inseriamo il template nell' id #list-movies o #list-series
 		if (type === 'movie') {
-			$('.type-movies').removeClass('d-none');
 			$('.list-movies').append(html);
+			callAjaxActors(input[i].id, type)
 		} else {
-			$('.type-series').removeClass('d-none');
 			$('.list-series').append(html);
+			callAjaxActors(input[i].id, type)
 		}
+		// Uso i dati della chiamata per interrogare ed estrarre array attori dei vari film cercati
+
 	}
+	showTypeSerch();
+}
+// Render Attori
+// Funzione per la renderizzazione della pagina
+function renderAttori	(input, id) {
+	//Handlebars
+	var source = $('#attori-template').html();
+	var template = Handlebars.compile(source);
+	var cast = [];
+	for (var i = 0; i < 5; i++) {
+		cast.push(input[i].name);
+	}
+	var context = {
+		names: cast
+	}
+	var html = template(context);
+	$("[data-id='" + id + "']").find('.attori').append(html);
 }
 // Chiamata Ajax per ricerca film o serie
 function callAjaxData (serchString, type) {
@@ -83,13 +99,29 @@ function callAjaxData (serchString, type) {
 			language: 'it-IT'
 		},
 		success: function (data) {
+			// callAjaxActors(data.id, 'movie')
 			if (data.total_results) {
 				render(data.results, type);
 			} else {
-				console.log(data.total_results)
 				notFound(type);
 			}
-
+		},
+		error: function (err) {
+			console.log('Errore: ' + err);
+		}
+	});
+}
+// Funzione ricerca attori film
+function callAjaxActors (serchId, type) {
+	$.ajax({
+		url: 'https://api.themoviedb.org/3/' + type + '/' + serchId + '/credits',
+		type: 'GET',
+		data: {
+			api_key: 'c423a47df89e015bd0c2e2130db1be10',
+			language: 'it-IT'
+		},
+		success: function (data) {
+			renderAttori(data.cast, serchId)
 		},
 		error: function (err) {
 			console.log('Errore: ' + err);
@@ -106,6 +138,7 @@ function notFound (type) {
 	} else {
 		$('.list-series').append(html);
 	}
+	showTypeSerch();
 }
 // Funzione per la ricerca dei titoli dei film con il bottone cerca
 function serchClick (bottone, campoInput) {
@@ -164,6 +197,12 @@ function insertImage (image) {
 }
 // Funzione di reset campo input e risultati
 function resetSerch ()	{
+	$('.notfound').remove();
 	$('.list .item').remove();
 	$('.serch__input').val('');
+}
+// Funzione per attivare le categorie dopo la ricerca
+function showTypeSerch () {
+	$('.type-movies').removeClass('d-none');
+	$('.type-series').removeClass('d-none');
 }

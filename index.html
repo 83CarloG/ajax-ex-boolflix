@@ -48,25 +48,30 @@ initial-scale=1.0">
 
 		<!-- Template Film/Serie-->
 		<script id="movie-serie-template" type="text/x-handlebars-template">
-		<div class="item">
+		<div class="item" data-id="{{id}}">
 			<div class="card">
 				<ul class="details">
 					<li class="title"><h4>Titolo: </h4>{{title}} {{name}}</li>
 					<li><h4>Titolo originale: </h4> {{original_title}} {{original_name}}</li>
 					<!-- <li>lingua originale: {{{original_language}}}</li> -->
 					<li><h4>Voto medio: </h4>{{{vote_average}}}</li>
-					<li class="overvie-2"><h4>Overview: </h4><span class="overview">{{overview}}</span></li>
+					<li><h4>Overview: </h4><span class="overview">{{overview}}</span></li>
+					<ul class="attori"> Attori:</ul>
 				</ul>
 			</div>
 			<div class="poster"><img class="poster__img" src="{{{poster_path}}}" alt="{{{title}}}"></div>
 		</div>
-
-
 		</script>
-		<!-- /Template -->
+		<!-- /Template Film/Serie-->
+		<!-- Template Attori -->
+		<script id="attori-template" type="text/x-handlebars-template">
+			 <li class="attore">{{names}}</li>
+		</script>
+		<!-- Template Attori -->
+
 		<!-- Template NotFound -->
 		<script id="not-found-template" type="text/x-handlebars-template">
-			 <li>La ricerca non ha prodotto risultati</li>
+			 <li class="notfound"><em>La ricerca non ha prodotto risultati</em></li>
 		</script>
 
 		<script src="js/main.js" charset="utf-8"></script>
